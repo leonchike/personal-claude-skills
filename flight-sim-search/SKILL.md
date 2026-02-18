@@ -1,16 +1,17 @@
 ---
 name: flight-sim-search
 description: >
-  Search and present real-world flight data for flight simulation enthusiasts using the
-  Flight Sim Search MCP server. Use this skill whenever the user mentions flights, routes,
-  airlines, aircraft types, flight planning, SimBrief, FlightRadar24, flight durations,
-  ICAO codes, or anything related to finding flights for simulation. Also use when the user
-  asks to search, filter, compare, or explore flight options — even casually, like "find me
-  a cool long-haul" or "what does Turkish fly on the A350". Covers search strategy,
-  response formatting, URL construction, and MSFS 2024 addon management.
+  Search real-world flight data for flight simulation discovery using the Flight Sim Search
+  MCP server. Trigger on aircraft ICAO type codes (A359, A35K, B77W, B789), large result
+  requests ("find 200 flights"), duration+aircraft searches ("8hr flights on the A350"),
+  airline route exploration ("what does Turkish fly on the A350"), sim language (SimBrief,
+  MSFS, dispatch, addon), ICAO airport codes, or casual sim discovery ("find me a cool
+  long-haul"). Do NOT trigger for real-world travel planning like "flights to Amsterdam in
+  June" or "cheapest flight to Tokyo". Key distinction: sim users search by aircraft type,
+  duration, and airline operations; travelers search by destination, dates, and price.
 metadata:
   author: user
-  version: 1.0.0
+  version: 2.0.0
   mcp-server: flight-sim-search
 ---
 
@@ -18,6 +19,35 @@ metadata:
 
 Guide Claude to use the Flight Sim Search MCP server effectively — searching flights,
 formatting results, constructing URLs, and managing MSFS 2024 addons.
+
+## When to Use This Skill
+
+### ✅ TRIGGER — Flight simulation discovery
+
+The user wants to find real-world flights to fly in a simulator. Signals include:
+
+- **Aircraft type codes**: "A359", "A35K", "B77W", "B789", "777-200ER", "Dreamliner"
+- **Large result sets**: "find me 200 flights", "show me at least 150 options"
+- **Duration + aircraft combos**: "8hr flights on the A350", "12-hour 777 routes"
+- **Airline operations**: "what does Turkish fly on the A350", "Emirates A380 routes"
+- **Sim-specific language**: "SimBrief", "dispatch", "MSFS", "flight sim", "addon"
+- **Route exploration**: "long-haul from EDDF", "trans-Pacific routes", "flights between KJFK and EGLL"
+- **Casual sim discovery**: "find me a cool long-haul", "interesting overnight flights"
+- **ICAO airport codes used naturally**: "routes out of KATL", "flights into RJTT"
+- **Addon management**: "what airports do I have installed", "add PMDG 777 to my addons"
+
+### ❌ DO NOT TRIGGER — Real-world travel planning
+
+The user wants to book or plan personal travel. Signals include:
+
+- **Destination + date**: "flights to Amsterdam in early June", "fly to Tokyo next week"
+- **Price/booking language**: "cheapest flight to London", "book me a ticket"
+- **Personal travel context**: "I'm planning a trip to...", "vacation flights to..."
+- **Seat/class preferences**: "business class to Dubai", "direct flights under $500"
+- **No aircraft type or sim context**: just destinations and dates without sim indicators
+
+If in doubt, look for aircraft type codes or sim terminology — their presence almost always
+means flight sim discovery.
 
 ## Core Principles
 
@@ -76,6 +106,28 @@ formatting results, constructing URLs, and managing MSFS 2024 addons.
 - **`getAviationWeather`** — Current METAR observations.
 - **`getVatsimAtis`** — VATSIM ATIS information.
 
+## Search Strategy
+
+### Single aircraft type, single duration
+Straightforward — one `searchFlights` call:
+```
+searchFlights(aircraftType: "A359", durationMinutes: 480, limit: 200, compact: true)
+```
+
+### Multiple aircraft types (e.g. "A359 or A35K")
+Run **separate searches per aircraft type** and combine results:
+```
+searchFlights(aircraftType: "A359", durationMinutes: 480, limit: 200, compact: true)
+searchFlights(aircraftType: "A35K", durationMinutes: 480, limit: 200, compact: true)
+```
+Present results grouped by aircraft type with clear section headers.
+
+### Open-ended exploration ("find me a cool long-haul")
+Use broader parameters and curate the results:
+- Search with just `minDurationMinutes: 480` and a high limit
+- Group results by airline or region for browsability
+- Highlight unique or scenic routes
+
 ## Presenting Results
 
 Use markdown tables. The standard columns are:
@@ -115,6 +167,8 @@ Always convert user-friendly hours to minutes for the API:
 - "9–9.5 hours" → `minDurationMinutes: 540, maxDurationMinutes: 570`
 - "under 3 hours" → `maxDurationMinutes: 180`
 - "over 12 hours" → `minDurationMinutes: 720`
+- "8hr flights" → `durationMinutes: 480`
+- "at least 6 hours" → `minDurationMinutes: 360`
 
 ## Common Airline ICAO Codes
 
