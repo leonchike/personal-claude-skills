@@ -1,0 +1,381 @@
+/* ======================================================
+   Anthropic-inspired Slidev Theme
+
+   Derived from Anthropic's presentation design language:
+   - Warm terracotta/coral cover pages
+   - Muted olive section dividers
+   - Clean white body pages with thin dark border
+   - Large light-weight serif headings
+   - Sans-serif body text
+   - Warm beige code blocks
+   ====================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,500;0,8..60,600;0,8..60,700;1,8..60,400&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+:root {
+  /* ---- Core palette ---- */
+  --a-white: #ffffff;
+  --a-cream: #faf9f5;
+  --a-charcoal: #191918;
+  --a-text: #1a1a19;
+  --a-text-secondary: #6b6b69;
+  --a-text-light: #8a8a87;
+  --a-border: #e0dfd8;
+  --a-border-dark: #2a2a28;
+
+  /* ---- Accent colors ---- */
+  --a-terracotta: #c97d5d;
+  --a-olive: #8a8f65;
+  --a-clay: #b8a08a;
+  --a-oat: #d4cfc0;
+
+  /* ---- Code ---- */
+  --a-code-bg: #edeadf;
+  --a-code-text: #1a1a19;
+  --a-code-comment: #8a7a6a;
+
+  /* ---- Slidev overrides ---- */
+  --slidev-theme-primary: var(--a-charcoal);
+}
+
+/* ==========================================================
+   GLOBAL SLIDE FRAME
+   Every slide gets a thin dark border, matching the reference
+   ========================================================== */
+
+.slidev-page > div {
+  box-shadow: inset 0 0 0 1px var(--a-border-dark) !important;
+}
+
+/* ==========================================================
+   DEFAULT LAYOUT (body slides)
+   White background, generous padding, editorial feel
+   ========================================================== */
+
+.slidev-layout {
+  background: var(--a-white) !important;
+  color: var(--a-text) !important;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif !important;
+  padding: 3rem 3.5rem 2.5rem !important;
+  position: relative !important;
+}
+
+/* ---- Page number bottom-right ---- */
+.slidev-page-number {
+  font-family: 'Inter', sans-serif !important;
+  font-weight: 400 !important;
+  color: var(--a-text-secondary) !important;
+  font-size: 0.8rem !important;
+}
+
+/* ==========================================================
+   TYPOGRAPHY
+   Large thin serif for h1, bold sans for h2/h3, regular body
+   ========================================================== */
+
+.slidev-layout h1 {
+  font-family: 'Source Serif 4', Georgia, 'Times New Roman', serif !important;
+  font-weight: 400 !important;
+  color: var(--a-charcoal) !important;
+  font-size: 2.4rem !important;
+  line-height: 1.15 !important;
+  letter-spacing: -0.02em !important;
+  margin-bottom: 1.5rem !important;
+  border-bottom: none !important;
+}
+
+.slidev-layout h2 {
+  font-family: 'Inter', sans-serif !important;
+  font-weight: 700 !important;
+  color: var(--a-charcoal) !important;
+  font-size: 1.2rem !important;
+  line-height: 1.3 !important;
+  letter-spacing: -0.01em !important;
+  margin-top: 1.4rem !important;
+  margin-bottom: 0.6rem !important;
+}
+
+.slidev-layout h3 {
+  font-family: 'Inter', sans-serif !important;
+  font-weight: 700 !important;
+  color: var(--a-charcoal) !important;
+  font-size: 1rem !important;
+  line-height: 1.3 !important;
+  margin-top: 1rem !important;
+  margin-bottom: 0.4rem !important;
+}
+
+.slidev-layout p,
+.slidev-layout li {
+  font-family: 'Inter', sans-serif !important;
+  font-weight: 400 !important;
+  color: var(--a-text) !important;
+  font-size: 0.88rem !important;
+  line-height: 1.7 !important;
+}
+
+.slidev-layout strong {
+  font-weight: 700 !important;
+  color: var(--a-charcoal) !important;
+}
+
+/* ==========================================================
+   CODE BLOCKS
+   Warm beige background with muted syntax, matching reference
+   ========================================================== */
+
+.slidev-layout pre,
+.slidev-layout code {
+  font-family: 'JetBrains Mono', 'SF Mono', 'Fira Code', monospace !important;
+}
+
+.slidev-layout pre {
+  background: var(--a-code-bg) !important;
+  color: var(--a-code-text) !important;
+  border-radius: 10px !important;
+  padding: 1.2rem 1.4rem !important;
+  font-size: 0.7rem !important;
+  line-height: 1.6 !important;
+  border: none !important;
+  box-shadow: none !important;
+  overflow-x: auto !important;
+}
+
+/* Override Shiki's inline token colors so all code text is dark */
+.slidev-layout pre code,
+.slidev-layout pre code span,
+.slidev-layout pre .shiki,
+.slidev-layout pre .shiki span,
+.slidev-layout pre .shiki code span {
+  color: var(--a-code-text) !important;
+}
+
+.slidev-layout :not(pre) > code {
+  background: var(--a-code-bg) !important;
+  color: var(--a-charcoal) !important;
+  padding: 0.15em 0.45em !important;
+  border-radius: 4px !important;
+  font-size: 0.82em !important;
+  font-weight: 500 !important;
+}
+
+/* ==========================================================
+   TABLES
+   Clean, minimal -- thin bottom borders only
+   ========================================================== */
+
+.slidev-layout table {
+  width: 100% !important;
+  border-collapse: collapse !important;
+  font-size: 0.82rem !important;
+  margin: 0.6rem 0 !important;
+}
+
+.slidev-layout table th {
+  background: transparent !important;
+  color: var(--a-charcoal) !important;
+  font-weight: 700 !important;
+  text-align: left !important;
+  padding: 0.5rem 0.8rem !important;
+  font-size: 0.78rem !important;
+  border-bottom: 2px solid var(--a-charcoal) !important;
+}
+
+.slidev-layout table td {
+  padding: 0.5rem 0.8rem !important;
+  border-bottom: 1px solid var(--a-border) !important;
+  vertical-align: top !important;
+}
+
+.slidev-layout table tr:nth-child(even) td {
+  background: transparent !important;
+}
+
+/* ==========================================================
+   LINKS
+   ========================================================== */
+
+.slidev-layout a {
+  color: var(--a-text) !important;
+  text-decoration: underline !important;
+  text-underline-offset: 2px !important;
+  font-weight: 400 !important;
+  transition: opacity 0.2s ease !important;
+}
+
+.slidev-layout a:hover {
+  opacity: 0.7 !important;
+}
+
+/* ==========================================================
+   LISTS
+   Standard filled circle bullets, matching the reference
+   ========================================================== */
+
+.slidev-layout ul {
+  list-style: disc !important;
+  padding-left: 1.3rem !important;
+}
+
+.slidev-layout ul li {
+  padding-left: 0.2rem !important;
+  margin-bottom: 0.3rem !important;
+}
+
+.slidev-layout ul li::marker {
+  color: var(--a-charcoal) !important;
+  font-size: 0.7em !important;
+}
+
+/* Remove any custom ::before bullets from previous version */
+.slidev-layout ul li::before {
+  content: none !important;
+  display: none !important;
+}
+
+/* ==========================================================
+   FULL-BLEED SLIDES
+   Cover and section slides need to fill the entire viewport.
+   The parent .slidev-layout has padding, so we use negative
+   margins to break out of it and fill edge-to-edge.
+   ========================================================== */
+
+.slidev-layout:has(.cover-slide),
+.slidev-layout:has(.section-slide) {
+  padding: 0 !important;
+  overflow: hidden !important;
+  height: 100% !important;
+}
+
+/* ==========================================================
+   COVER SLIDE
+   Solid terracotta background, large serif title,
+   dark text, branding bottom-left
+   ========================================================== */
+
+.cover-slide {
+  background: var(--a-terracotta) !important;
+  padding: 3.5rem 4rem !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: space-between !important;
+  width: 100% !important;
+  height: 100% !important;
+  min-height: 100% !important;
+  position: absolute !important;
+  inset: 0 !important;
+  box-sizing: border-box !important;
+}
+
+.cover-slide h1 {
+  font-family: 'Source Serif 4', Georgia, serif !important;
+  font-weight: 400 !important;
+  color: var(--a-charcoal) !important;
+  font-size: 3.2rem !important;
+  line-height: 1.12 !important;
+  letter-spacing: -0.025em !important;
+  max-width: 75% !important;
+}
+
+.cover-slide .brand {
+  font-family: 'Inter', sans-serif !important;
+  font-weight: 500 !important;
+  font-size: 1.1rem !important;
+  color: var(--a-charcoal) !important;
+  opacity: 0.85 !important;
+}
+
+/* ==========================================================
+   SECTION / TRANSITION SLIDE
+   Solid muted color background with chapter pill and
+   large serif title anchored to bottom-left
+   ========================================================== */
+
+.section-slide {
+  padding: 3.5rem 4rem !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: flex-end !important;
+  width: 100% !important;
+  height: 100% !important;
+  min-height: 100% !important;
+  position: absolute !important;
+  inset: 0 !important;
+  box-sizing: border-box !important;
+}
+
+.section-slide.olive { background: var(--a-olive) !important; }
+.section-slide.terracotta { background: var(--a-terracotta) !important; }
+.section-slide.clay { background: var(--a-clay) !important; }
+.section-slide.oat { background: var(--a-oat) !important; }
+
+.section-slide .chapter-pill {
+  display: inline-block !important;
+  font-family: 'Inter', sans-serif !important;
+  font-weight: 500 !important;
+  font-size: 0.82rem !important;
+  color: var(--a-charcoal) !important;
+  border: 1.5px solid var(--a-charcoal) !important;
+  border-radius: 100px !important;
+  padding: 0.25rem 0.9rem !important;
+  margin-bottom: 1rem !important;
+  background: transparent !important;
+  width: fit-content !important;
+}
+
+.section-slide h1 {
+  font-family: 'Source Serif 4', Georgia, serif !important;
+  font-weight: 400 !important;
+  color: var(--a-charcoal) !important;
+  font-size: 3rem !important;
+  line-height: 1.1 !important;
+  letter-spacing: -0.025em !important;
+  margin-bottom: 0 !important;
+}
+
+/* ==========================================================
+   BODY SLIDE WITH CHAPTER HEADER
+   Matches the "Fundamentals" content page in the reference:
+   chapter pill top-left, large serif h1, two-column body
+   ========================================================== */
+
+.body-header .chapter-pill {
+  display: inline-block !important;
+  font-family: 'Inter', sans-serif !important;
+  font-weight: 500 !important;
+  font-size: 0.78rem !important;
+  color: var(--a-charcoal) !important;
+  border: 1.5px solid var(--a-charcoal) !important;
+  border-radius: 100px !important;
+  padding: 0.2rem 0.8rem !important;
+  margin-bottom: 0.8rem !important;
+  background: transparent !important;
+}
+
+.body-header h1 {
+  font-family: 'Source Serif 4', Georgia, serif !important;
+  font-weight: 400 !important;
+  color: var(--a-charcoal) !important;
+  font-size: 2.6rem !important;
+  line-height: 1.12 !important;
+  letter-spacing: -0.02em !important;
+  margin-bottom: 1.8rem !important;
+}
+
+/* ==========================================================
+   TWO COLUMN LAYOUT helper
+   ========================================================== */
+
+.two-col {
+  display: grid !important;
+  grid-template-columns: 1fr 1fr !important;
+  gap: 2.5rem !important;
+}
+
+/* ==========================================================
+   PROGRESS BAR
+   ========================================================== */
+
+.slidev-progress {
+  background: var(--a-terracotta) !important;
+}
