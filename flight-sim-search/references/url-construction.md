@@ -52,6 +52,100 @@ https://dispatch.simbrief.com/options/custom?airline=DLH&fltnum=765&type=A359&or
 
 ---
 
+## SimBrief URL with Callsign (from a search)
+
+When `searchFlights`, `getFlightByIdentifier`, or `getFlightCallsign` returns a
+`callsign`, append it to the standard SimBrief URL as `&callsign={CALLSIGN}` —
+the user lands in SimBrief with the right ATC callsign pre-filled. The
+find-flights MCP already does this for you whenever you request URLs
+(`includeUrls: ["simbrief"]` etc.); you only need to construct it by hand in
+compact mode or when you skipped `includeUrls`.
+
+**Template (with callsign, no route):**
+```
+https://dispatch.simbrief.com/options/custom?airline={AIRLINE}&fltnum={FLIGHTNUMBER}&type={AIRCRAFTTYPE}&orig={ORIGIN}&dest={DESTINATION}&callsign={CALLSIGN}
+```
+
+`{AIRLINE}` / `{FLIGHTNUMBER}` come from the flight row (ICAO airline + flight
+number, e.g. `SAS` + `1462`). `{CALLSIGN}` is the ATC callsign (e.g. `SAS52L`)
+— these are not the same thing; the IATA pair is *where the flight is*, the
+callsign is *what controllers hear*. SimBrief takes both.
+
+If `callsign` is `null` (cache miss on `searchFlights`, or RouteForge failed in
+`getFlightByIdentifier`), just omit the `&callsign=` parameter — the URL is
+still useful.
+
+---
+
+## Enhanced SimBrief URL (Route + Callsign)
+
+When the `generateFlightRoute` tool has been invoked and returned both a
+`callsign` and a `route_string`, build an **enhanced** SimBrief URL that
+pre-fills the filed routing and callsign — the user lands in SimBrief with the
+route already loaded and just clicks Generate.
+
+**Template:**
+```
+https://dispatch.simbrief.com/options/custom?airline={AIRLINE}&fltnum={FLTNUM}&type={AIRCRAFTTYPE}&orig={ORIGIN}&dest={DESTINATION}&callsign={CALLSIGN}&route={URL_ENCODED_ROUTE}
+```
+
+### Field Mapping
+
+| Placeholder            | Source                                                                                |
+|------------------------|---------------------------------------------------------------------------------------|
+| `{AIRLINE}`            | First 3 characters of `callsign` (`"DLH613"` → `DLH`)                                 |
+| `{FLTNUM}`             | Remainder of `callsign` after the airline prefix (`"DLH613"` → `613`)                 |
+| `{AIRCRAFTTYPE}`       | Aircraft type from the same response (or a prior `searchFlights` / `getFlightByIdentifier`) — omit if unknown |
+| `{ORIGIN}`             | `dep_icao` from the response                                                          |
+| `{DESTINATION}`        | `arr_icao` from the response                                                          |
+| `{CALLSIGN}`           | `callsign` from the response (full string, e.g. `"DLH613"`)                           |
+| `{URL_ENCODED_ROUTE}`  | `route_string` from the response, **URL-encoded** (spaces → `%20`)                    |
+
+> Note: when the callsign comes from `searchFlights` / `getFlightByIdentifier`
+> instead (e.g. `SAS52L` for `SK1462`), it usually isn't of the form
+> `<3-letter airline><number>` — the suffix is alphanumeric (the trailing `L`
+> in `SAS52L`). In that case prefer the IATA airline and flightnumber from the
+> same response row for `{AIRLINE}` / `{FLTNUM}`, and pass the full callsign
+> as `{CALLSIGN}`. SimBrief treats the three fields independently.
+
+### Worked Example
+
+From a `generateFlightRoute` response:
+
+```json
+{
+  "dep_icao": "UBBB",
+  "arr_icao": "EDDF",
+  "callsign": "DLH613",
+  "route_string": "AGDA1C AGDAM M747 LUSAL M11 REBLO UM11 CRM Q162 SPESA SPES4G"
+}
+```
+
+With aircraft type `A21N` known from earlier conversation, the enhanced URL is:
+
+```
+https://dispatch.simbrief.com/options/custom?airline=DLH&fltnum=613&type=A21N&orig=UBBB&dest=EDDF&callsign=DLH613&route=AGDA1C%20AGDAM%20M747%20LUSAL%20M11%20REBLO%20UM11%20CRM%20Q162%20SPESA%20SPES4G
+```
+
+### Notes
+
+- **URL encoding matters.** A literal space in the route string will break the
+  link. Encode all spaces as `%20`. Standard ICAO route tokens (letters,
+  digits) don't need any other encoding.
+- **Callsign vs. flight input.** The `flight` parameter you sent into
+  `generateFlightRoute` may have been IATA-style (`"LH613"`), but the
+  `callsign` field in the response is the actual ATC callsign sourced from
+  Flightradar24 — that's the canonical airline ICAO + filed number to use for
+  SimBrief.
+- **If `callsign` is null** (rare — happens when FR24 doesn't surface a
+  callsign for the sourced flight), fall back to the standard SimBrief URL
+  without `callsign` / `route`, and present the route_string separately for the
+  user to paste in.
+- **Use `route_string`, never `baseline_route`.** The response also returns
+  `baseline_route` (the deterministic pre-AI snap); it's reference-only.
+
+---
+
 ## FlightRadar24 URL
 
 **Template:**
